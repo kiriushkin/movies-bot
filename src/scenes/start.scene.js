@@ -1,5 +1,5 @@
 import { Scenes } from 'telegraf';
-import locales from '../locales/ru.json' assert { type: 'json' };
+import locales from '../locales/ru.js';
 import getKeyboard from '../keyboards/start.keyboard.js';
 import usersService from '../service/users.service.js';
 

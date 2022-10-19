@@ -1,5 +1,5 @@
 import { Scenes } from 'telegraf';
-import locales from '../locales/ru.json' assert { type: 'json' };
+import locales from '../locales/ru.js';
 import { checkSubscription } from '../keyboards/common.keyboard.js';
 import subscribe from '../middlewares/subscribe.middleware.js';
 

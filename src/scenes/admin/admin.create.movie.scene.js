@@ -1,6 +1,6 @@
 import { Scenes } from 'telegraf';
 import { nanoid } from 'nanoid';
-import locales from '../../locales/ru.json' assert { type: 'json' };
+import locales from '../../locales/ru.js';
 import { back } from '../../keyboards/common.keyboard.js';
 import adminService from '../../service/admin.service.js';
 

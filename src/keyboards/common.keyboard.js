@@ -1,5 +1,5 @@
 import { Markup } from 'telegraf';
-import locales from '../locales/ru.json' assert { type: 'json' };
+import locales from '../locales/ru.js';
 
 const back = () => {
   return Markup.keyboard([Markup.button.text(locales.back)]).resize();
