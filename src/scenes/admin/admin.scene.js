@@ -60,8 +60,4 @@ scene.hears(locales.admin.button.sendMessage, (ctx) =>
   ctx.scene.enter(ADMIN_SEND_SCENE)
 );
 
-scene.hears('/saveme', (ctx) => {
-  ctx.scene.enter(START_SCENE);
-});
-
 export default scene;

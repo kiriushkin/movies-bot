@@ -9,8 +9,6 @@ const bot = new Telegraf(BOT_TOKEN);
 bot.use(session());
 bot.use(stage.middleware());
 
-bot.start((ctx) => ctx.scene.enter(START_SCENE));
-
 try {
   await bot.launch();
   console.log('Bot launched.');

@@ -6,7 +6,7 @@ const { BOT_TOKEN, SUBSCRIPTION_SCENE } = process.env;
 export default async (ctx, next) => {
   try {
     if (!ctx.session) ctx.session = {};
-    // if (ctx.session.isAdmin) return next();
+    if (ctx.session.isAdmin) return next();
 
     const channels = await Channel.findAll({ raw: true });
     ctx.session.channels = channels;

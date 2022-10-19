@@ -15,10 +15,6 @@ scene.hears(locales.back, (ctx) => {
   ctx.scene.enter(START_SCENE);
 });
 
-scene.hears('/saveme', (ctx) => {
-  ctx.scene.enter(START_SCENE);
-});
-
 scene.on('text', async (ctx) => {
   try {
     const id = +ctx.message.text;

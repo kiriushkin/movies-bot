@@ -6,6 +6,8 @@ import subscriptionScene from './scenes/subscription.scene.js';
 import adminScenes from './scenes/admin/admin.scenes.js';
 import moviesScenes from './scenes/movies/movies.scenes.js';
 
+const { START_SCENE } = process.env;
+
 const stage = new Scenes.Stage([
   startScene,
   subscriptionScene,
@@ -15,5 +17,7 @@ const stage = new Scenes.Stage([
 
 stage.use(admin);
 stage.use(subscribtions);
+
+stage.start((ctx) => ctx.scene.enter(START_SCENE));
 
 export default stage;
