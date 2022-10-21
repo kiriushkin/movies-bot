@@ -10,10 +10,10 @@ const scene = new Scenes.BaseScene(ADMIN_CREATE_CHANNEL_SCENE);
 scene.enter((ctx) => {
   ctx.session.input = 'channelId';
   ctx.session.channel = {};
-  ctx.reply(locales.admin.reply.channelId, back());
+  ctx.editMessageText(locales.admin.reply.channelId, back());
 });
 
-scene.hears(locales.back, (ctx) => {
+scene.action(locales.back, (ctx) => {
   ctx.session.input = null;
   ctx.session.channel = null;
   ctx.scene.enter(ADMIN_MAIN_SCENE);
@@ -43,12 +43,14 @@ scene.on('text', async (ctx) => {
           `<b>${locales.admin.reply.channelCreated}</b>\nid: <code>${channelId}</code>\nИмя: <code>${name}</code>\nСсылка: <code>${url}</code>`
         );
         ctx.session.channel = null;
+        ctx.session.message_id = (await ctx.reply('Text', back())).message_id;
         ctx.scene.enter(ADMIN_MAIN_SCENE);
         break;
     }
   } catch (err) {
     console.error(err.parent);
-    ctx.reply(err);
+    ctx.reply('Произошла ошибка');
+    ctx.session.message_id = (await ctx.reply('text', back())).message_id;
     ctx.scene.enter(ADMIN_MAIN_SCENE);
   }
 });

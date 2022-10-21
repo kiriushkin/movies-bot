@@ -16,18 +16,19 @@ scene.enter(async (ctx) => {
   try {
     const { channel } = ctx.session;
 
-    ctx.replyWithHTML(
+    ctx.editMessageText(
       `<b>${locales.admin.reply.channelEdit}</b>\nID: <code>${channel.channelId}</code>\nИмя: <code>${channel.name}</code>\nСсылка: <code>${channel.url}</code>`,
-      editChannel()
+      { ...editChannel(), parse_mode: 'HTML' }
     );
   } catch (err) {
     console.error(err);
     ctx.reply('Произошла ошибка');
+    ctx.session.message_id = (await ctx.reply('text', back())).message_id;
     ctx.scene.enter(ADMIN_MAIN_SCENE);
   }
 });
 
-scene.hears(locales.back, (ctx) => {
+scene.action(locales.back, (ctx) => {
   if (ctx.session.input) {
     ctx.session.input = null;
     return ctx.scene.enter(ADMIN_EDIT_CHANNEL_SCENE);
@@ -37,19 +38,19 @@ scene.hears(locales.back, (ctx) => {
   return ctx.scene.enter(ADMIN_EDIT_CHANNELS_SCENE);
 });
 
-scene.hears(locales.admin.button.editId, (ctx) => {
+scene.action(locales.admin.button.editId, (ctx) => {
   ctx.session.input = 'channelId';
-  ctx.reply(locales.admin.reply.channelId, back());
+  ctx.editMessageText(locales.admin.reply.channelId, back());
 });
 
-scene.hears(locales.admin.button.editName, (ctx) => {
+scene.action(locales.admin.button.editName, (ctx) => {
   ctx.session.input = 'channelName';
-  ctx.reply(locales.admin.reply.channelName, back());
+  ctx.editMessageText(locales.admin.reply.channelName, back());
 });
 
-scene.hears(locales.admin.button.editUrl, (ctx) => {
+scene.action(locales.admin.button.editUrl, (ctx) => {
   ctx.session.input = 'channelUrl';
-  ctx.reply(locales.admin.reply.channelUrl, back());
+  ctx.editMessageText(locales.admin.reply.channelUrl, back());
 });
 
 scene.on('text', async (ctx) => {
@@ -73,10 +74,12 @@ scene.on('text', async (ctx) => {
       `<b>${locales.admin.reply.channelEdited}</b>\nid: <code>${channelId}</code>\nИмя: <code>${name}</code>\nСсылка: <code>${url}</code>`
     );
 
+    ctx.session.message_id = (await ctx.reply('text', back())).message_id;
     ctx.scene.enter(ADMIN_MAIN_SCENE);
   } catch (err) {
     console.error(err);
     ctx.reply('Произошла ошибка');
+    ctx.session.message_id = (await ctx.reply('text', back())).message_id;
     ctx.scene.enter(ADMIN_MAIN_SCENE);
   }
 });

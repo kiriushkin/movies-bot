@@ -7,6 +7,7 @@ export default {
     button: {
       admin: 'Админ панель',
       movies: 'Найти фильм',
+      support: 'Связаться с нами',
     },
   },
   subscibtion: {

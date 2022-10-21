@@ -9,22 +9,48 @@ const scene = new Scenes.BaseScene(START_SCENE);
 
 scene.enter(async (ctx) => {
   try {
-    if (ctx.session.wasHere)
-      return ctx.reply(
-        locales.start.reply.anotherTime,
+    if (ctx.session.new) {
+      ctx.session.new = false;
+      if (ctx.session.wasHere)
+        return ctx.reply(
+          locales.start.reply.anotherTime,
+          getKeyboard(ctx.session.isAdmin)
+        );
+
+      const user = await usersService.getUser(ctx.from.id);
+
+      if (!user)
+        await usersService.addUser({
+          id: ctx.from.id,
+          username: ctx.from.username,
+        });
+
+      ctx.session.wasHere = true;
+      ctx.reply(
+        locales.start.reply.firstTime,
         getKeyboard(ctx.session.isAdmin)
       );
+    } else {
+      if (ctx.session.wasHere)
+        return ctx.editMessageText(
+          locales.start.reply.anotherTime,
+          getKeyboard(ctx.session.isAdmin)
+        );
 
-    const user = await usersService.getUser(ctx.from.id);
+      const user = await usersService.getUser(ctx.from.id);
 
-    if (!user)
-      await usersService.addUser({
-        id: ctx.from.id,
-        username: ctx.from.username,
-      });
+      if (!user)
+        await usersService.addUser({
+          id: ctx.from.id,
+          username: ctx.from.username,
+        });
 
-    ctx.session.wasHere = true;
-    ctx.reply(locales.start.reply.firstTime, getKeyboard(ctx.session.isAdmin));
+      ctx.session.wasHere = true;
+      ctx.editMessageText(
+        locales.start.reply.firstTime,
+        getKeyboard(ctx.session.isAdmin)
+      );
+    }
   } catch (err) {
     console.error(err);
     ctx.reply('Произошла ошибка');
@@ -32,11 +58,11 @@ scene.enter(async (ctx) => {
   }
 });
 
-scene.hears(locales.start.button.admin, (ctx) => {
+scene.action(locales.start.button.admin, (ctx) => {
   ctx.scene.enter(ADMIN_MAIN_SCENE);
 });
 
-scene.hears(locales.start.button.movies, (ctx) =>
+scene.action(locales.start.button.movies, (ctx) =>
   ctx.scene.enter(MOVIES_CODE_SCENE)
 );
 

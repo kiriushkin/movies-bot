@@ -8,10 +8,10 @@ const { START_SCENE, MOVIES_CODE_SCENE } = process.env;
 const scene = new Scenes.BaseScene(MOVIES_CODE_SCENE);
 
 scene.enter((ctx) => {
-  ctx.reply(locales.movies.reply.code, back());
+  ctx.editMessageText(locales.movies.reply.code, back());
 });
 
-scene.hears(locales.back, (ctx) => {
+scene.action(locales.back, (ctx) => {
   ctx.scene.enter(START_SCENE);
 });
 
@@ -19,12 +19,16 @@ scene.on('text', async (ctx) => {
   try {
     const id = +ctx.message.text;
 
-    if (typeof id !== 'number')
-      return ctx.replyWithHTML(`<b>Введите корректный код!</b>`);
+    if (isNaN(id))
+      return ctx.replyWithHTML(`<b>Введите корректный код!</b>`, back());
 
     const movie = await moviesService.getMovie(id);
 
-    if (!movie) return ctx.replyWithHTML(`<b>Фильм не найден.</b>`);
+    if (!movie) {
+      await ctx.replyWithHTML(`<b>Фильм не найден.</b>`);
+      ctx.session.new = true;
+      return ctx.scene.enter(START_SCENE);
+    }
 
     await ctx.replyWithMediaGroup([
       {
@@ -35,10 +39,12 @@ scene.on('text', async (ctx) => {
       { type: 'video', media: movie.videoId },
     ]);
 
+    ctx.session.new = true;
     ctx.scene.enter(START_SCENE);
   } catch (err) {
     console.error(err);
     ctx.reply('Произошла ошибка');
+    ctx.session.message_id = (await ctx.reply('text', back())).message_id;
     ctx.scene.enter(START_SCENE);
   }
 });

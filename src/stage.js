@@ -18,6 +18,9 @@ const stage = new Scenes.Stage([
 stage.use(admin);
 stage.use(subscribtions);
 
-stage.start((ctx) => ctx.scene.enter(START_SCENE));
+stage.start((ctx) => {
+  ctx.session.new = true;
+  ctx.scene.enter(START_SCENE);
+});
 
 export default stage;

@@ -11,10 +11,10 @@ const scene = new Scenes.BaseScene(ADMIN_CREATE_MOVIE_SCENE);
 scene.enter((ctx) => {
   ctx.session.input = 'movieTitle';
   ctx.session.movie = {};
-  ctx.reply(locales.admin.reply.movieTitle, back());
+  ctx.editMessageText(locales.admin.reply.movieTitle, back());
 });
 
-scene.hears(locales.back, (ctx) => {
+scene.action(locales.back, (ctx) => {
   ctx.session.input = null;
   ctx.session.movie = null;
   ctx.scene.enter(ADMIN_MAIN_SCENE);
@@ -122,12 +122,15 @@ scene.on('video', async (ctx) => {
       { type: 'video', media: movie.videoId },
     ]);
 
+    ctx.session.message_id = (await ctx.reply('text', back())).message_id;
+
     ctx.session.input = null;
     ctx.session.movie = null;
     ctx.scene.enter(ADMIN_MAIN_SCENE);
   } catch (err) {
     console.error(err);
     ctx.reply('Произошла ошибка');
+    ctx.session.message_id = (await ctx.reply('text', back())).message_id;
     ctx.scene.enter(ADMIN_MAIN_SCENE);
   }
 });

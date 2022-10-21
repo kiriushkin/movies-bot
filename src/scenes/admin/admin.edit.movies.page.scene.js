@@ -1,6 +1,7 @@
 import { Scenes } from 'telegraf';
 import locales from '../../locales/ru.js';
 import { movieList } from '../../keyboards/admin.keyboard.js';
+import { back } from '../../keyboards/common.keyboard.js';
 import adminService from '../../service/admin.service.js';
 
 const {
@@ -15,21 +16,25 @@ const scene = new Scenes.BaseScene(ADMIN_EDIT_MOVIES_PAGE_SCENE);
 scene.enter(async (ctx) => {
   try {
     ctx.session.movieList = await adminService.getMovies(ctx.session.page);
-    ctx.reply(locales.admin.reply.movieList, movieList(ctx.session.movieList));
+    ctx.editMessageText(
+      locales.admin.reply.movieList,
+      movieList(ctx.session.movieList)
+    );
   } catch (err) {
     console.error(err);
     ctx.reply('Произошла ошибка');
+    ctx.session.message_id = (await ctx.reply('text', back())).message_id;
     ctx.scene.enter(ADMIN_MAIN_SCENE);
   }
 });
 
-scene.hears(locales.back, (ctx) => {
+scene.action(locales.back, (ctx) => {
   ctx.scene.enter(ADMIN_EDIT_MOVIES_SCENE);
 });
 
-scene.on('text', (ctx) => {
+scene.on('callback_query', (ctx) => {
   const [movie] = ctx.session.movieList.filter(
-    (movie) => movie.title === ctx.message.text
+    (movie) => movie.title === ctx.update.callback_query.data
   );
 
   if (!movie) return;

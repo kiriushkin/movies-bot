@@ -19,44 +19,55 @@ const {
 const scene = new Scenes.BaseScene(ADMIN_MAIN_SCENE);
 
 scene.enter((ctx) => {
-  ctx.reply(locales.admin.reply.enter, main());
+  if (!ctx.session.message_id)
+    return ctx.editMessageText(locales.admin.reply.enter, main());
+
+  ctx.telegram.editMessageText(
+    ctx.from.id,
+    ctx.session.message_id,
+    undefined,
+    locales.admin.reply.enter,
+    main()
+  );
+
+  ctx.session.message_id = null;
 });
 
-scene.hears(locales.back, (ctx) => ctx.scene.enter(START_SCENE));
+scene.action(locales.back, (ctx) => ctx.scene.enter(START_SCENE));
 
-scene.hears(locales.admin.button.addChannel, (ctx) => {
+scene.action(locales.admin.button.addChannel, (ctx) => {
   ctx.scene.enter(ADMIN_CREATE_CHANNEL_SCENE);
 });
 
-scene.hears(locales.admin.button.editChannel, (ctx) => {
+scene.action(locales.admin.button.editChannel, (ctx) => {
   ctx.scene.enter(ADMIN_EDIT_CHANNELS_SCENE);
 });
 
-scene.hears(locales.admin.button.deleteChannel, (ctx) => {
+scene.action(locales.admin.button.deleteChannel, (ctx) => {
   ctx.scene.enter(ADMIN_DELETE_CHANNEL_SCENE);
 });
 
-scene.hears(locales.admin.button.addMovie, (ctx) => {
+scene.action(locales.admin.button.addMovie, (ctx) => {
   ctx.scene.enter(ADMIN_CREATE_MOVIE_SCENE);
 });
 
-scene.hears(locales.admin.button.editMovie, (ctx) => {
+scene.action(locales.admin.button.editMovie, (ctx) => {
   ctx.scene.enter(ADMIN_EDIT_MOVIES_SCENE);
 });
 
-scene.hears(locales.admin.button.deleteMovie, (ctx) => {
+scene.action(locales.admin.button.deleteMovie, (ctx) => {
   ctx.scene.enter(ADMIN_DELETE_MOVIE_SCENE);
 });
 
-scene.hears(locales.admin.button.statistics, (ctx) =>
+scene.action(locales.admin.button.statistics, (ctx) =>
   ctx.scene.enter(ADMIN_STATISTICS_SCENE)
 );
 
-scene.hears(locales.admin.button.infoMovies, (ctx) =>
+scene.action(locales.admin.button.infoMovies, (ctx) =>
   ctx.scene.enter(ADMIN_INFO_MOVIES_SCENE)
 );
 
-scene.hears(locales.admin.button.sendMessage, (ctx) =>
+scene.action(locales.admin.button.sendMessage, (ctx) =>
   ctx.scene.enter(ADMIN_SEND_SCENE)
 );
 

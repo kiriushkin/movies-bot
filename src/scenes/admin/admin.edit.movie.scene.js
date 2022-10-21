@@ -13,8 +13,6 @@ scene.enter(async (ctx) => {
   try {
     const { movie } = ctx.session;
 
-    await ctx.reply(locales.admin.reply.movieEdit, editMovie());
-
     await ctx.replyWithMediaGroup([
       {
         type: 'photo',
@@ -23,14 +21,17 @@ scene.enter(async (ctx) => {
       },
       { type: 'video', media: movie.videoId },
     ]);
+
+    ctx.reply(locales.admin.reply.movieEdit, editMovie());
   } catch (err) {
     console.error(err);
     ctx.reply('Произошла ошибка');
+    ctx.session.message_id = (await ctx.reply('text', back())).message_id;
     ctx.scene.enter(ADMIN_MAIN_SCENE);
   }
 });
 
-scene.hears(locales.back, (ctx) => {
+scene.action(locales.back, (ctx) => {
   if (ctx.session.input) {
     ctx.session.input = null;
     return ctx.scene.enter(ADMIN_EDIT_MOVIE_SCENE);
@@ -40,74 +41,74 @@ scene.hears(locales.back, (ctx) => {
   return ctx.scene.enter(ADMIN_EDIT_MOVIES_SCENE);
 });
 
-scene.hears(locales.admin.button.editTitle, (ctx) => {
+scene.action(locales.admin.button.editTitle, (ctx) => {
   ctx.session.input = 'movieTitle';
-  ctx.reply(locales.admin.reply.movieTitle, back());
+  ctx.editMessageText(locales.admin.reply.movieTitle, back());
 });
 
-scene.hears(locales.admin.button.editGenre, (ctx) => {
+scene.action(locales.admin.button.editGenre, (ctx) => {
   ctx.session.input = 'movieGenre';
-  ctx.reply(locales.admin.reply.movieGenre, back());
+  ctx.editMessageText(locales.admin.reply.movieGenre, back());
 });
 
-scene.hears(locales.admin.button.editReleaseDate, (ctx) => {
+scene.action(locales.admin.button.editReleaseDate, (ctx) => {
   ctx.session.input = 'movieReleaseDate';
-  ctx.reply(locales.admin.reply.movieReleaseDate, back());
+  ctx.editMessageText(locales.admin.reply.movieReleaseDate, back());
 });
 
-scene.hears(locales.admin.button.editCountry, (ctx) => {
+scene.action(locales.admin.button.editCountry, (ctx) => {
   ctx.session.input = 'movieCountry';
-  ctx.reply(locales.admin.reply.movieCountry, back());
+  ctx.editMessageText(locales.admin.reply.movieCountry, back());
 });
 
-scene.hears(locales.admin.button.editDirector, (ctx) => {
+scene.action(locales.admin.button.editDirector, (ctx) => {
   ctx.session.input = 'movieDirector';
-  ctx.reply(locales.admin.reply.movieDirector, back());
+  ctx.editMessageText(locales.admin.reply.movieDirector, back());
 });
 
-scene.hears(locales.admin.button.editScript, (ctx) => {
+scene.action(locales.admin.button.editScript, (ctx) => {
   ctx.session.input = 'movieScript';
-  ctx.reply(locales.admin.reply.movieScript, back());
+  ctx.editMessageText(locales.admin.reply.movieScript, back());
 });
 
-scene.hears(locales.admin.button.editDuration, (ctx) => {
+scene.action(locales.admin.button.editDuration, (ctx) => {
   ctx.session.input = 'movieDuration';
-  ctx.reply(locales.admin.reply.movieDuration, back());
+  ctx.editMessageText(locales.admin.reply.movieDuration, back());
 });
 
-scene.hears(locales.admin.button.editBudget, (ctx) => {
+scene.action(locales.admin.button.editBudget, (ctx) => {
   ctx.session.input = 'movieBudget';
-  ctx.reply(locales.admin.reply.movieBudget, back());
+  ctx.editMessageText(locales.admin.reply.movieBudget, back());
 });
 
-scene.hears(locales.admin.button.editAge, (ctx) => {
+scene.action(locales.admin.button.editAge, (ctx) => {
   ctx.session.input = 'movieAge';
-  ctx.reply(locales.admin.reply.movieAge, back());
+  ctx.editMessageText(locales.admin.reply.movieAge, back());
 });
 
-scene.hears(locales.admin.button.editKinopoiskRate, (ctx) => {
+scene.action(locales.admin.button.editKinopoiskRate, (ctx) => {
   ctx.session.input = 'movieKinopoiskRate';
-  ctx.reply(locales.admin.reply.movieKinopoiskRate, back());
+  ctx.editMessageText(locales.admin.reply.movieKinopoiskRate, back());
 });
 
-scene.hears(locales.admin.button.editImdbRate, (ctx) => {
+scene.action(locales.admin.button.editImdbRate, (ctx) => {
   ctx.session.input = 'movieImdbRate';
-  ctx.reply(locales.admin.reply.movieImdbRate, back());
+  ctx.editMessageText(locales.admin.reply.movieImdbRate, back());
 });
 
-scene.hears(locales.admin.button.editDescription, (ctx) => {
+scene.action(locales.admin.button.editDescription, (ctx) => {
   ctx.session.input = 'movieDescription';
-  ctx.reply(locales.admin.reply.movieDescription, back());
+  ctx.editMessageText(locales.admin.reply.movieDescription, back());
 });
 
-scene.hears(locales.admin.button.editPreview, (ctx) => {
+scene.action(locales.admin.button.editPreview, (ctx) => {
   ctx.session.input = 'moviePreview';
-  ctx.reply(locales.admin.reply.moviePreview, back());
+  ctx.editMessageText(locales.admin.reply.moviePreview, back());
 });
 
-scene.hears(locales.admin.button.editTrailer, (ctx) => {
+scene.action(locales.admin.button.editTrailer, (ctx) => {
   ctx.session.input = 'movieTrailer';
-  ctx.reply(locales.admin.reply.movieTrailer, back());
+  ctx.editMessageText(locales.admin.reply.movieTrailer, back());
 });
 
 scene.on('text', async (ctx) => {
@@ -163,10 +164,12 @@ scene.on('text', async (ctx) => {
       { type: 'video', media: movie.videoId },
     ]);
 
+    ctx.session.message_id = (await ctx.reply('text', back())).message_id;
     ctx.scene.enter(ADMIN_MAIN_SCENE);
   } catch (err) {
     console.error(err);
     ctx.reply('Произошла ошибка');
+    ctx.session.message_id = (await ctx.reply('text', back())).message_id;
     ctx.scene.enter(ADMIN_MAIN_SCENE);
   }
 });
@@ -191,10 +194,12 @@ scene.on('photo', async (ctx) => {
       { type: 'video', media: movie.videoId },
     ]);
 
+    ctx.session.message_id = (await ctx.reply('text', back())).message_id;
     ctx.scene.enter(ADMIN_MAIN_SCENE);
   } catch (err) {
     console.error(err);
     ctx.reply('Произошла ошибка');
+    ctx.session.message_id = (await ctx.reply('text', back())).message_id;
     ctx.scene.enter(ADMIN_MAIN_SCENE);
   }
 });
@@ -217,10 +222,12 @@ scene.on('video', async (ctx) => {
       { type: 'video', media: movie.videoId },
     ]);
 
+    ctx.session.message_id = (await ctx.reply('text', back())).message_id;
     ctx.scene.enter(ADMIN_MAIN_SCENE);
   } catch (err) {
     console.error(err);
     ctx.reply('Произошла ошибка');
+    ctx.session.message_id = (await ctx.reply('text', back())).message_id;
     ctx.scene.enter(ADMIN_MAIN_SCENE);
   }
 });

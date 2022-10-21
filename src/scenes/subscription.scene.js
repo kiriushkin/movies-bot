@@ -9,20 +9,39 @@ const scene = new Scenes.BaseScene(SUBSCRIPTION_SCENE);
 
 scene.enter(async (ctx) => {
   try {
-    const links = ctx.session.channels.map((channel) => {
-      return `<a href='${channel.url}'>${channel.name}</a>`;
-    });
+    const channels = ctx.session.channels;
 
-    if (ctx.session.wasHere)
-      return ctx.replyWithHTML(
-        `${locales.subscibtion.reply.firstTime}\n${links.join('\n')}`,
-        { disable_web_page_preview: true, ...checkSubscription() }
+    if (!ctx.session.message_id) {
+      if (ctx.session.wasHere)
+        return (ctx.session.message_id = await ctx.replyWithHTML(
+          locales.subscibtion.reply.firstTime,
+          checkSubscription(channels)
+        ));
+
+      return (ctx.session.message_id = await ctx.replyWithHTML(
+        locales.subscibtion.reply.anotherTime,
+
+        checkSubscription(channels)
+      ));
+    }
+
+    if (ctx.session.wasHere) {
+      ctx.telegram.editMessageReplyMarkup(
+        ctx.from.id,
+        ctx.session.message_id,
+        ctx.session.message_id,
+        checkSubscription(channels)
       );
+      return ctx.telegram.editMessageText(
+        ctx.from.id,
+        ctx.session.message_id,
+        ctx.session.message_id,
+        locales.subscibtion.reply.firstTime
+      );
+    }
 
-    ctx.replyWithHTML(
-      `${locales.subscibtion.reply.anotherTime}\n${links.join('\n')}`,
-      { disable_web_page_preview: true, ...checkSubscription() }
-    );
+    ctx.editMessageReplyMarkup(checkSubscription(channels));
+    ctx.editMessageText(locales.subscibtion.reply.anotherTime);
   } catch (err) {
     console.error(err);
     ctx.reply('Произошла ошибка');
@@ -30,7 +49,8 @@ scene.enter(async (ctx) => {
   }
 });
 
-scene.hears(locales.subscibtion.button.checkSubscription, (ctx) => {
+scene.action(locales.subscibtion.button.checkSubscription, (ctx) => {
+  ctx.session.new = false;
   subscribe(ctx, () => ctx.scene.enter(START_SCENE));
 });
 

@@ -32,17 +32,18 @@ scene.enter(async (ctx) => {
       monthlySearches,
     ] = await Promise.all(promises);
 
-    ctx.replyWithHTML(
+    ctx.editMessageText(
       `${locales.admin.reply.statistics}\n\nВсего пользователей: <code>${allUsers}</code>\nНовых пользователей за день: <code>${daylyUsers}</code>\nНовых пользователей за неделю: <code>${weeklyUsers}</code>\nНовых пользователей за месяц: <code>${monthlyUsers}</code>\n\nВсего поисковых запросов: <code>${allSearches}</code>\nПоисковых запросов за день: <code>${dailySearches}</code>\nПоисковых запросов за неделю: <code>${weeklySearches}</code>\nПоисковых запросов за месяц: <code>${monthlySearches}</code>`,
-      back()
+      { ...back(), parse_mode: 'HTML' }
     );
   } catch (err) {
     console.error(err);
     ctx.reply('Произошла ошибка');
+    ctx.session.message_id = (await ctx.reply('text', back())).message_id;
     ctx.scene.enter(ADMIN_MAIN_SCENE);
   }
 });
 
-scene.hears(locales.back, (ctx) => ctx.scene.enter(ADMIN_MAIN_SCENE));
+scene.action(locales.back, (ctx) => ctx.scene.enter(ADMIN_MAIN_SCENE));
 
 export default scene;

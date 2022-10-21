@@ -8,10 +8,10 @@ const { ADMIN_MAIN_SCENE, ADMIN_SEND_SCENE, ADMIN_IDS } = process.env;
 const scene = new Scenes.BaseScene(ADMIN_SEND_SCENE);
 
 scene.enter((ctx) => {
-  ctx.reply(locales.admin.reply.sendMessage, back());
+  ctx.editMessageText(locales.admin.reply.sendMessage, back());
 });
 
-scene.hears(locales.back, (ctx) => ctx.scene.enter(ADMIN_MAIN_SCENE));
+scene.action(locales.back, (ctx) => ctx.scene.enter(ADMIN_MAIN_SCENE));
 
 scene.on('message', async (ctx) => {
   try {
@@ -40,10 +40,14 @@ scene.on('message', async (ctx) => {
     await Promise.all(promises);
 
     await ctx.reply(locales.admin.reply.messagesSent);
+
+    ctx.session.message_id = (await ctx.reply('text', back())).message_id;
+
     ctx.scene.enter(ADMIN_MAIN_SCENE);
   } catch (err) {
     console.error(err);
     ctx.reply('Произошла ошибка');
+    ctx.session.message_id = (await ctx.reply('text', back())).message_id;
     ctx.scene.enter(ADMIN_MAIN_SCENE);
   }
 });
