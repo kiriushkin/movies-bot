@@ -11,37 +11,15 @@ scene.enter(async (ctx) => {
   try {
     const channels = ctx.session.channels;
 
-    if (!ctx.session.message_id) {
-      if (ctx.session.wasHere)
-        return (ctx.session.message_id = await ctx.replyWithHTML(
-          locales.subscibtion.reply.firstTime,
-          checkSubscription(channels)
-        ));
-
-      return (ctx.session.message_id = await ctx.replyWithHTML(
+    if (ctx.session.wasHere)
+      return ctx.reply(
         locales.subscibtion.reply.anotherTime,
-
-        checkSubscription(channels)
-      ));
-    }
-
-    if (ctx.session.wasHere) {
-      ctx.telegram.editMessageReplyMarkup(
-        ctx.from.id,
-        ctx.session.message_id,
-        ctx.session.message_id,
         checkSubscription(channels)
       );
-      return ctx.telegram.editMessageText(
-        ctx.from.id,
-        ctx.session.message_id,
-        ctx.session.message_id,
-        locales.subscibtion.reply.firstTime
-      );
-    }
 
-    ctx.editMessageReplyMarkup(checkSubscription(channels));
-    ctx.editMessageText(locales.subscibtion.reply.anotherTime);
+    ctx.session.wasHere = true;
+
+    ctx.reply(locales.subscibtion.reply.firstTime, checkSubscription(channels));
   } catch (err) {
     console.error(err);
     ctx.reply('Произошла ошибка');

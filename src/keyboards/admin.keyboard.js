@@ -184,13 +184,19 @@ const deleteMovie = () => {
 
 const pages = (number) => {
   let i = 1;
-  return Markup.inlineKeyboard(
-    [
-      ...new Array(number).fill(0).map(() => Markup.button.callback(i, i++)),
-      Markup.button.callback(locales.back, locales.back),
-    ],
-    { columns: 5 }
-  );
+  return number > 0
+    ? Markup.inlineKeyboard(
+        [
+          ...new Array(number)
+            .fill(0)
+            .map(() => Markup.button.callback(i, i++)),
+          Markup.button.callback(locales.back, locales.back),
+        ],
+        { columns: 5 }
+      )
+    : Markup.inlineKeyboard([
+        Markup.button.callback(locales.back, locales.back),
+      ]);
 };
 
 export {
