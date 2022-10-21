@@ -7,6 +7,7 @@ export default {
     button: {
       admin: '⚙️ Админ панель',
       movies: '🔎 Найти фильм',
+      random: '🎲 Случайный фильм',
       support: '📞 Связаться с нами',
     },
   },

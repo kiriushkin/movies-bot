@@ -6,6 +6,10 @@ class MovieService {
     Search.create({ movie_id: id });
     return await Movie.findByPk(id);
   }
+
+  async getMoviesIds() {
+    return await Movie.findAll({ attributes: ['id'], raw: true });
+  }
 }
 
 export default new MovieService();
