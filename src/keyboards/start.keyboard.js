@@ -30,6 +30,10 @@ export default (isAdmin) => {
         locales.start.button.movies,
         locales.start.button.movies
       ),
+      Markup.button.callback(
+        locales.start.button.random,
+        locales.start.button.random
+      ),
       Markup.button.url(
         locales.start.button.support,
         'https://t.me/rucinemaclips_sup'
