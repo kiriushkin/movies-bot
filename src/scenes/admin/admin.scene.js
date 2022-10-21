@@ -20,14 +20,17 @@ const scene = new Scenes.BaseScene(ADMIN_MAIN_SCENE);
 
 scene.enter((ctx) => {
   if (!ctx.session.message_id)
-    return ctx.editMessageText(locales.admin.reply.enter, main());
+    return ctx.editMessageText(locales.admin.reply.enter, {
+      ...main(),
+      parse_mode: 'MarkdownV2',
+    });
 
   ctx.telegram.editMessageText(
     ctx.from.id,
     ctx.session.message_id,
     undefined,
     locales.admin.reply.enter,
-    main()
+    { ...main(), parse_mode: 'MarkdownV2' }
   );
 
   ctx.session.message_id = null;

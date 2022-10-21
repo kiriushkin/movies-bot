@@ -8,7 +8,10 @@ const { START_SCENE, MOVIES_CODE_SCENE } = process.env;
 const scene = new Scenes.BaseScene(MOVIES_CODE_SCENE);
 
 scene.enter((ctx) => {
-  ctx.editMessageText(locales.movies.reply.code, back());
+  ctx.editMessageText(locales.movies.reply.code, {
+    ...back(),
+    parse_mode: 'MarkdownV2',
+  });
 });
 
 scene.action(locales.back, (ctx) => {
@@ -20,15 +23,15 @@ scene.on('text', async (ctx) => {
     const id = +ctx.message.text;
 
     if (isNaN(id))
-      return ctx.replyWithHTML(`<b>Введите корректный код!</b>`, back());
+      return ctx.replyWithMarkdownV2(locales.movies.reply.incorrect, back());
 
     const movie = await moviesService.getMovie(id);
 
-    if (!movie) {
-      await ctx.replyWithHTML(`<b>Фильм не найден.</b>`);
-      ctx.session.new = true;
-      return ctx.scene.enter(START_SCENE);
-    }
+    if (!movie)
+      return await ctx.replyWithMarkdownV2(
+        locales.movies.reply.notFound,
+        back()
+      );
 
     await ctx.replyWithMediaGroup([
       {

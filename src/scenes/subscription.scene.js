@@ -12,14 +12,17 @@ scene.enter(async (ctx) => {
     const channels = ctx.session.channels;
 
     if (ctx.session.wasHere)
-      return ctx.reply(
-        locales.subscibtion.reply.anotherTime,
-        checkSubscription(channels)
-      );
+      return ctx.reply(locales.subscibtion.reply.anotherTime, {
+        ...checkSubscription(channels),
+        parse_mode: 'MarkdownV2',
+      });
 
     ctx.session.wasHere = true;
 
-    ctx.reply(locales.subscibtion.reply.firstTime, checkSubscription(channels));
+    ctx.reply(locales.subscibtion.reply.firstTime, {
+      ...checkSubscription(channels),
+      parse_mode: 'MarkdownV2',
+    });
   } catch (err) {
     console.error(err);
     ctx.reply('Произошла ошибка');
@@ -34,7 +37,7 @@ scene.action(locales.subscibtion.button.checkSubscription, async (ctx) => {
 
   if (result) return ctx.scene.enter(START_SCENE);
 
-  ctx.answerCbQuery('Вы подписались не на все каналы!');
+  ctx.answerCbQuery('❌ Вы подписались не на все каналы!');
 });
 
 export default scene;

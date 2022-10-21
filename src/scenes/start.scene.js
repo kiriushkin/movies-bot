@@ -12,10 +12,10 @@ scene.enter(async (ctx) => {
     if (ctx.session.new) {
       ctx.session.new = false;
       if (ctx.session.wasHere)
-        return ctx.reply(
-          locales.start.reply.anotherTime,
-          getKeyboard(ctx.session.isAdmin)
-        );
+        return ctx.reply(locales.start.reply.anotherTime, {
+          ...getKeyboard(ctx.session.isAdmin),
+          parse_mode: 'MarkdownV2',
+        });
 
       const user = await usersService.getUser(ctx.from.id);
 
@@ -26,16 +26,16 @@ scene.enter(async (ctx) => {
         });
 
       ctx.session.wasHere = true;
-      ctx.reply(
-        locales.start.reply.firstTime,
-        getKeyboard(ctx.session.isAdmin)
-      );
+      ctx.reply(locales.start.reply.firstTime, {
+        ...getKeyboard(ctx.session.isAdmin),
+        parse_mode: 'MarkdownV2',
+      });
     } else {
       if (ctx.session.wasHere)
-        return ctx.editMessageText(
-          locales.start.reply.anotherTime,
-          getKeyboard(ctx.session.isAdmin)
-        );
+        return ctx.editMessageText(locales.start.reply.anotherTime, {
+          ...getKeyboard(ctx.session.isAdmin),
+          parse_mode: 'MarkdownV2',
+        });
 
       const user = await usersService.getUser(ctx.from.id);
 
@@ -46,10 +46,10 @@ scene.enter(async (ctx) => {
         });
 
       ctx.session.wasHere = true;
-      ctx.editMessageText(
-        locales.start.reply.firstTime,
-        getKeyboard(ctx.session.isAdmin)
-      );
+      ctx.editMessageText(locales.start.reply.firstTime, {
+        ...getKeyboard(ctx.session.isAdmin),
+        parse_mode: 'MarkdownV2',
+      });
     }
   } catch (err) {
     console.error(err);

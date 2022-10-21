@@ -5,8 +5,12 @@ const { SUBSCRIPTION_SCENE } = process.env;
 export default async (ctx, next) => {
   try {
     if (!ctx.session) ctx.session = {};
-    if (ctx.session.__scenes?.current === SUBSCRIPTION_SCENE) return next();
-    if (ctx.session.isAdmin) return next();
+    if (
+      ctx.session.__scenes?.current === SUBSCRIPTION_SCENE &&
+      ctx.update?.message?.text !== '/start'
+    )
+      return next();
+    // if (ctx.session.isAdmin) return next();
 
     const result = await subscribeService.checkSubscriptions(ctx);
 
