@@ -16,9 +16,9 @@ const Movie = sequelize.define(
     age: { type: DataTypes.STRING(50), allowNull: false },
     kinopoiskRate: { type: DataTypes.FLOAT, allowNull: false },
     imdbRate: { type: DataTypes.FLOAT, allowNull: false },
-    description: { type: DataTypes.STRING, allowNull: false },
-    photoId: { type: DataTypes.STRING, allowNull: false },
-    videoId: { type: DataTypes.STRING, allowNull: false },
+    description: { type: DataTypes.STRING(1000), allowNull: false },
+    photoId: { type: DataTypes.STRING(1000), allowNull: false },
+    videoId: { type: DataTypes.STRING(1000), allowNull: false },
   },
   { timestamps: false }
 );
