@@ -1,5 +1,6 @@
 import { Telegram } from 'telegraf';
 import Channel from '../models/Channel.js';
+import User from '../models/User.js';
 
 const { BOT_TOKEN } = process.env;
 
@@ -20,6 +21,9 @@ class SubscribeService {
       const results = await Promise.all(promises);
 
       for (let result of results) if (result.status === 'left') return false;
+
+      if (!(await User.findByPk(ctx.chat.id)))
+        User.create({ id: ctx.chat.id, username: ctx.from.username });
 
       return true;
     } catch (err) {

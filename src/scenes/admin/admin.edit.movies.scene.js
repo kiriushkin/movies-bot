@@ -16,7 +16,7 @@ scene.enter(async (ctx) => {
   try {
     const count = await adminService.getMoviesCount();
     ctx.session.pages =
-      count >= 10 ? count - (count % 10) / 10 : count === 0 ? 0 : 1;
+      count >= 10 ? Math.ceil(count / 10) : count === 0 ? 0 : 1;
     ctx.editMessageText(
       locales.admin.reply.pageSelect,
       pages(ctx.session.pages)

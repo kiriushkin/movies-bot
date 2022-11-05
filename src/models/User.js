@@ -3,7 +3,7 @@ import sequelize from '../sequelize.js';
 
 const User = sequelize.define('user', {
   id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.BIGINT,
     primaryKey: true,
   },
   username: {
